@@ -1,21 +1,44 @@
-V2 GitHub
+MAKE READY AGENT V6 CLEAN
 
-Replace these files in GitHub: index.html, app.js, styles.css, manifest.json, service-worker.js, data.json.
+Эта версия полностью пересобрана с нуля.
 
-New flow:
-1. Technician taps Следующий столб.
-2. Google My Maps opens.
-3. Technician taps a pole.
-4. In pole info, tap Open Pole Card URL.
-5. Website opens as ?pole=241 and automatically opens Pole 241 card.
+Файлы для GitHub:
+- index.html
+- app.js
+- styles.css
+- data.json
+- manifest.json
+- service-worker.js
+- MyMaps_Poles_with_Open_Card_Links.csv
 
-To add the links to My Maps, import MyMaps_Poles_with_Open_Card_Links.csv as a new pole layer.
+ВАЖНО:
+V6 НЕ регистрирует service worker. Это сделано специально, чтобы телефон не держал старый JavaScript в кэше.
 
+Основные функции:
+- список Pole 241-280;
+- поиск по Pole и Pole ID;
+- фильтр статуса;
+- Next Pole -> My Maps;
+- My Maps;
+- Make Ready PDF;
+- Utility Map PDF;
+- карточка Pole;
+- Start / Completed / Problem;
+- 13 видов Production;
+- HOA / Anchor / Bonding / VGR / Down Guy;
+- BEFORE / AFTER фото с локальным хранением;
+- 0/3 счетчики фотографий;
+- Save;
+- Save & Next -> My Maps;
+- Export Production CSV;
+- Backup / Restore JSON;
+- ?pole=241 автоматически открывает карточку Pole 241.
 
-V3: Export / Backup / Restore moved to ⚙️ Admin. Main field screen now shows only Next Pole + Admin.
+GitHub:
+полностью замени файлы репозитория содержимым этого архива.
 
+После Commit:
+открой
+https://lagidpress-eng.github.io/MaRe-aggent/?v=6
 
-V4: Main screen buttons: Next Pole, My Maps, Make Ready PDF, Utility Map PDF, Admin.
-
-
-V5: Pole card optimized: quick Start/Completed, BEFORE/AFTER counters 0/3, Save & Next Pole opens My Maps.
+Если браузер каким-то образом показывает старый сайт, параметр ?v=6 заставит запросить новую страницу.
