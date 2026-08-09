@@ -1,9 +1,0 @@
-{
-  "name": "Make Ready Agent",
-  "short_name": "MakeReady",
-  "start_url": "./",
-  "display": "standalone",
-  "background_color": "#f1f4f6",
-  "theme_color": "#123b5d",
-  "icons": []
-}
