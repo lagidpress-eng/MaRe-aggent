@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#123b5d">
+  <title>Make Ready Agent</title>
+  <link rel="stylesheet" href="styles.css?v=11.9.2">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+<header class="topbar">
+  <div>
+    <h1>Make Ready Agent</h1>
+    <div class="subtitle">PRM0001297784</div>
+  </div>
+</header>
+
+<main>
+
+  <section class="project-bar">
+    <div class="project-select-wrap">
+      <label for="projectSelect">Project</label>
+      <select id="projectSelect"></select>
+    </div>
+    <button id="newProjectBtn" type="button" class="admin-only">＋ New Project</button>
+    <button id="projectSettingsBtn" type="button" class="admin-only">⚙️ Project Settings</button>
+    <span id="roleBadge" class="role-badge tech">TECHNICIAN</span>
+  </section>
+
+  <section class="section-shell"><div class="section-title-row"><div><div class="section-kicker">TOOLS</div><h2>Project tools</h2></div></div><div class="main-actions">
+    <button id="myMapsBtn">🗺️ My Maps</button>
+    <button id="makeReadyBtn">📄 Make Ready PDF</button>
+    <button id="utilityMapBtn">📍 Utility Map PDF</button>
+    <button id="adminBtn">⚙️ Admin</button>
+    <button id="googleConnectBtn" class="cloud-btn">☁️ Sync now</button>
+  </div></section>
+  <div id="cloudStatus" class="cloud-status local">📱 Saved locally · Google not connected</div>
+
+  <section class="section-shell search-shell"><div class="search-row">
+    <input id="searchInput" type="search" placeholder="Pole 241 or 110490953" autocomplete="off">
+    <select id="statusFilter">
+      <option value="">All statuses</option>
+      <option value="Not started">Not started</option>
+      <option value="In progress">In progress</option>
+      <option value="Completed">Completed</option>
+      <option value="Problem">Problem</option>
+    </select>
+  </div></section>
+
+  <section id="stats" class="stats"></section>
+  <div id="errorBox" class="error-box hidden"></div>
+  <section class="section-shell pole-shell"><div class="section-title-row"><div><div class="section-kicker">FIELD LIST</div><h2>Poles</h2></div></div><div id="poleList" class="pole-list">
+    <div class="loading">Loading poles…</div>
+  </div></section>
+</main>
+
+<dialog id="poleDialog">
+  <div class="dialog-card">
+    <button id="closePoleBtn" class="close-btn" type="button">×</button>
+
+    <div class="pole-heading modern-pole-heading">
+      <div>
+        <h2 id="cardPoleTitle">Pole</h2>
+        <div id="cardPoleId" class="muted"></div>
+      </div>
+      <span id="cardStatusBadge" class="status-badge">Not started</span>
+    </div>
+
+    <div class="card-actions">
+      <button id="cardMyMapsBtn" type="button" class="btn-map" class="btn-map">🗺️ My Maps</button>
+      <button id="googleNavBtn" type="button" class="btn-nav" class="btn-nav">🚗 Navigation</button>
+    </div>
+
+    <h3>Project Work</h3>
+    <pre id="projectDescription"></pre>
+
+    <h3>Actual Completed Work</h3>
+    <div id="workGrid" class="work-grid"></div>
+    <button id="otherWorkBtn" type="button" class="other-work-btn">＋ Other work</button>
+
+    <div class="card-section">
+      <div class="section-kicker">FIELD DATA</div>
+      <h3>HOA</h3>
+      <div class="two-col">
+      <div>
+        <label for="originalHoa">PROJECT HOA</label>
+        <input id="originalHoa"  readonly placeholder="From Make Ready">
+      </div>
+      <div>
+        <label for="actualHoa">Actual HOA</label>
+        <input id="actualHoa" placeholder="27'06&quot;">
+      </div>
+    </div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <label for="anchorStatus">Anchor status</label>
+        <select id="anchorStatus">
+          <option value="">—</option>
+          <option>Existing reused</option>
+          <option>New installed</option>
+          <option>Replaced</option>
+          <option>Removed</option>
+          <option>Not installed</option>
+        </select>
+      </div>
+      <div>
+        <label for="anchorDetails">Anchor details</label>
+        <input id="anchorDetails">
+      </div>
+    </div>
+
+    <label for="fieldNotes">Field notes</label>
+    <textarea id="fieldNotes"></textarea>
+
+    <div class="card-section"><div class="section-kicker">EVIDENCE</div><h3>Photos</h3>
+
+    <div class="photo-block">
+      <div class="photo-header">
+        <b>BEFORE</b>
+        <span id="beforeCount" class="photo-count">0/3</span>
+      </div>
+      <div class="photo-actions">
+        <label class="photo-action photo-camera">📷 Take Photo
+          <input id="beforeCameraInput" type="file" accept="image/*" capture="environment" hidden>
+        </label>
+        <label class="photo-action photo-library">🖼️ Choose from Phone
+          <input id="beforeLibraryInput" type="file" accept="image/*" multiple hidden>
+        </label>
+      </div>
+      <div id="beforeGallery" class="gallery"></div>
+    </div>
+
+    <div class="photo-block">
+      <div class="photo-header">
+        <b>AFTER</b>
+        <span id="afterCount" class="photo-count">0/3</span>
+      </div>
+      <div class="photo-actions">
+        <label class="photo-action photo-camera">📷 Take Photo
+          <input id="afterCameraInput" type="file" accept="image/*" capture="environment" hidden>
+        </label>
+        <label class="photo-action photo-library">🖼️ Choose from Phone
+          <input id="afterLibraryInput" type="file" accept="image/*" multiple hidden>
+        </label>
+      </div>
+      <div id="afterGallery" class="gallery"></div>
+    </div>
+
+    
+    <div class="final-status-section">
+      <h3>Work Status</h3>
+      <div class="quick-status"><button id="completedBtn" type="button" class="btn-completed" class="btn-completed">✅ Completed</button>
+<button id="blownPoleBtn" type="button" class="btn-blown">💥 BLOWN POLE</button>
+<button id="doNotAttachBtn" type="button" class="btn-dna">🚫 DO NOT ATTACH</button>
+<button id="trafficControlBtn" type="button">🚦 Traffic Control</button>
+<button id="problemBtn" type="button" class="btn-problem" class="btn-problem">⚠️ Problem</button>
+</div>
+      <div class="status-select-wrap">
+        <label for="statusSelect">Status</label>
+        <select id="statusSelect">
+          <option>Not started</option>
+          <option>In progress</option>
+          <option>Completed</option>
+          <option>Problem</option>
+          <option>Do not attach</option>
+          <option>Blown pole</option>
+        
+<option value="Traffic Control">Traffic Control</option>
+</select>
+      </div>
+    </div>
+
+    </div>
+    <div id="saveMessage" class="save-message"></div>
+
+    <div class="save-row">
+      <button id="saveBtn" type="button" class="save-main">💾 Save</button>
+      <button id="saveNextBtn" type="button" class="save-next">💾 Save & Open Map</button>
+    </div>
+  </div>
+</dialog>
+
+
+<dialog id="otherWorkDialog">
+  <div class="dialog-card admin-card">
+    <button id="closeOtherWorkBtn" class="close-btn" type="button">×</button>
+    <h2>Other work</h2>
+    <p class="muted">Rarely used work types.</p>
+    <div id="otherWorkGrid" class="work-grid"></div>
+    <button id="saveOtherWorkBtn" type="button" class="primary full-btn">Done</button>
+  </div>
+</dialog>
+
+
+<dialog id="newProjectDialog">
+  <div class="dialog-card admin-card">
+    <button id="closeNewProjectBtn" class="close-btn" type="button">×</button>
+    <h2>New Project</h2>
+
+    <label for="newProjectId">Project ID</label>
+    <input id="newProjectId" placeholder="PRM0001299999">
+
+    <label for="newProjectName">Project Name (optional)</label>
+    <input id="newProjectName" placeholder="Comcast Make Ready">
+
+    <label for="newMyMapsUrl">Google My Maps URL</label>
+    <input id="newMyMapsUrl" placeholder="https://www.google.com/maps/d/...">
+
+    <label for="newMakeReadyUrl">Make Ready PDF URL</label>
+    <input id="newMakeReadyUrl" placeholder="https://drive.google.com/file/d/.../view">
+
+    <label for="newUtilityMapUrl">Utility Map PDF URL</label>
+    <input id="newUtilityMapUrl" placeholder="https://drive.google.com/file/d/.../view">
+
+    <label for="newProjectCsv">Pole CSV</label>
+    <input id="newProjectCsv" type="file" accept=".csv,text/csv">
+    <div class="muted new-project-help">
+      CSV columns supported: Name, Pole #, Latitude, Longitude, Description.
+    </div>
+
+    <div id="newProjectMessage" class="save-message"></div>
+    <button id="createProjectBtn" type="button" class="primary full-btn">Create Project</button>
+  </div>
+</dialog>
+
+<dialog id="projectSettingsDialog">
+  <div class="dialog-card admin-card">
+    <button id="closeProjectSettingsBtn" class="close-btn" type="button">×</button>
+    <h2>Project Settings</h2>
+
+    <label for="settingsProjectName">Project Name</label>
+    <input id="settingsProjectName">
+
+    <label for="settingsMyMapsUrl">Google My Maps URL</label>
+    <input id="settingsMyMapsUrl">
+
+    <label for="settingsMakeReadyUrl">Make Ready PDF URL</label>
+    <input id="settingsMakeReadyUrl">
+
+    <label for="settingsUtilityMapUrl">Utility Map PDF URL</label>
+    <input id="settingsUtilityMapUrl">
+
+    <button id="saveProjectSettingsBtn" type="button" class="primary full-btn">Save Settings</button>
+  </div>
+</dialog>
+
+
+
+<dialog id="hoaChangeDialog">
+  <div class="dialog-card validation-card">
+    <button id="closeHoaChangeBtn" class="close-btn" type="button">×</button>
+    <h2>HOA Difference</h2>
+    <div id="hoaDifferenceText" class="validation-text"></div>
+    <p>Actual HOA differs from Make Ready. Was the height changed?</p>
+
+    <div class="hoa-confirm-actions">
+      <button id="hoaNotChangedBtn" type="button">No</button>
+      <button id="hoaChangedBtn" type="button" class="primary">Yes</button>
+    </div>
+
+    <div id="hoaLinesBlock" class="hoa-lines-block hidden">
+      <label for="hoaLinesMoved">How many lines were moved to a different height?</label>
+      <input id="hoaLinesMoved" type="number" min="1" step="1" placeholder="1">
+      <div id="hoaLinesMessage" class="save-message"></div>
+      <button id="confirmHoaLinesBtn" type="button" class="primary full-btn">Confirm</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="completionValidationDialog">
+  <div class="dialog-card validation-card">
+    <button id="closeValidationBtn" class="close-btn" type="button">×</button>
+    <h2>Completion Check</h2>
+    <p class="muted">Confirm required field exceptions before this Pole can be marked Completed.</p>
+
+    <div id="hoaValidationBlock" class="validation-block hidden">
+      <h3>HOA Changed</h3>
+      <div id="hoaValidationText" class="validation-text"></div>
+      <div class="validation-warning">Height Change Description is required.</div>
+    </div>
+
+    <div id="dgValidationBlock" class="validation-block hidden">
+      <h3>DOWNGUY Required</h3>
+      <div class="validation-text">Make Ready indicates a down guy, but INSTALL DOWNGUY quantity is 0.</div>
+      <label class="confirm-row">
+        <input id="dgNotRequiredCheck" type="checkbox">
+        <span>Confirm: DOWNGUY is NOT REQUIRED in the field</span>
+      </label>
+    </div>
+
+    <div id="ramValidationBlock" class="validation-block hidden">
+      <h3>RAM'S HEAD Required</h3>
+      <div class="validation-text">Make Ready indicates a Ram's Head.</div>
+      <div class="ram-options">
+        <label class="confirm-row">
+          <input type="radio" name="ramResult" value="INSTALLED">
+          <span>INSTALLED</span>
+        </label>
+        <label class="confirm-row">
+          <input type="radio" name="ramResult" value="NOT REQUIRED">
+          <span>NOT REQUIRED</span>
+        </label>
+      </div>
+    </div>
+
+    <label for="validationNote">Exception / Confirmation Note</label>
+    <textarea id="validationNote" placeholder="Optional unless you need to explain the field condition."></textarea>
+
+    <div id="validationMessage" class="save-message"></div>
+
+    <div class="save-row">
+      <button id="cancelValidationBtn" type="button">Cancel</button>
+      <button id="confirmValidationBtn" type="button" class="primary">Confirm & Complete</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="adminDialog">
+  <div class="dialog-card admin-card">
+    <button id="closeAdminBtn" class="close-btn" type="button">×</button>
+    <h2>Admin</h2>
+    <p class="muted">Project utility functions.</p>
+
+    <div class="admin-grid">
+      <button id="exportCsvBtn" type="button">⬇️ Export Production CSV</button>
+      <button id="backupBtn" type="button">💾 Backup JSON</button>
+      <label class="file-button">♻️ Restore JSON
+        <input id="restoreInput" type="file" accept=".json,application/json" hidden>
+      </label>
+    </div>
+
+    
+    <div class="admin-grid">
+      <button id="syncNowBtn" type="button">☁️ Sync now</button>
+      <button id="openCloudSheetBtn" type="button">📊 Open cloud sheet</button>
+      <button id="openCloudFolderBtn" type="button">📁 Open project folder</button>
+    </div>
+
+    <p class="admin-note">
+      Data is saved locally on this phone/computer.
+      Backup JSON saves entered data, but not the photo files themselves.
+    </p>
+  </div>
+</dialog>
+
+<script src="app.js?v=11.9.2"></script>
+</body>
+</html>
